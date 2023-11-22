@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Secure Voting System</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <h1>Secure Voting</h1>
+      <div class="user-info">
+        <!-- Display user information here -->
+        <p>User: John Doe</p>
+        <p>Location: XYZ</p>
+      </div>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="parties">
+      <div class="party">
+        <img src="AAP_Symbol.png.webp" alt="Party 1 Logo">
+        <h2>Aam Aadmi Party</h2>
+        <button class="vote-btn" onclick="castVote('Party 1')">Vote</button>
+      </div>
+
+      <div class="party">
+        <img src="bjp.webp" alt="Party 1 Logo">
+        <h2>Bharatiya Janata Party</h2>
+        <button class="vote-btn" onclick="castVote('Party 1')">Vote</button>
+      </div>
+
+      <div class="party">
+        <img src="bahujan_samaj.webp" alt="Party 1 Logo">
+        <h2>Bahujan Samaj Party</h2>
+        <button class="vote-btn" onclick="castVote('Party 1')">Vote</button>
+      </div>
+
+      <div class="party">
+        <img src="congress.webp" alt="Party 1 Logo">
+        <h2>Indian National Congress</h2>
+        <button class="vote-btn" onclick="castVote('Party 1')">Vote</button>
+      </div>
+
+      <div class="party">
+        <img src="people.png" alt="Party 1 Logo">
+        <h2>National People's Party</h2>
+        <button class="vote-btn" onclick="castVote('Party 1')">Vote</button>
+      </div>
+      <!-- Add other parties similarly -->
+    </section>
+    
+    <div class="voted-message">
+      <!-- Display congratulations and vote information here -->
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
