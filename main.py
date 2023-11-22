@@ -1,55 +1,69 @@
-from flask import Flask, request
-from flask_sqlalchemy import SQLAlchemy
+import tkinter as tk
+from tkinter import messagebox
+import mysql.connector
+from mysql.connector import Error
 import uuid
 
-# Flask App Configuration
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://your_username:your_password@localhost/your_database'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+# Database connection function
+def create_database_connection():
+    try:
+        connection = mysql.connector.connect(
+            host='localhost',
+            database='voters',
+            user='root',
+            password='PHW#84#jeor')
+        return connection
+    except Error as e:
+        messagebox.showerror("Error", "Error while connecting to MySQL: " + str(e))
+        return None
 
-# Database Models
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    unique_id = db.Column(db.String(80), unique=True, nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    age = db.Column(db.Integer, nullable=False)
-    city = db.Column(db.String(100), nullable=False)
-    has_voted = db.Column(db.Boolean, default=False)
+# Function to insert voter into the database
+def create_voter(name, age, city, connection):
+    try:
+        cursor = connection.cursor()
+        unique_id = str(uuid.uuid4())
+        query = "INSERT INTO citizens (name, age, city, unique__id) VALUES (%s, %s, %s, %s)"
+        cursor.execute(query, (name, age, city, unique_id))
+        connection.commit()
+        messagebox.showinfo("Success", "Voter registered successfully with ID: " + unique_id)
+    except Error as e:
+        messagebox.showerror("Error", "Failed to insert record into MySQL table: " + str(e))
+    finally:
+        if connection.is_connected():
+            cursor.close()
 
-class Vote(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    choice = db.Column(db.String(80), nullable=False)
+# Register Voter
+def register_voter():
+    name = name_entry.get()
+    age = age_entry.get()
+    city = city_entry.get()
+    connection = create_database_connection()
+    if connection is not None:
+        create_voter(name, age, city, connection)
+        connection.close()
 
-# Create Database Tables
-db.create_all()
+# Create main window
+root = tk.Tk()
+root.title("Voter Registration System")
 
-# Route for User Registration
-@app.route('/register', methods=['POST'])
-def register():
-    data = request.json
-    new_user = User(unique_id=str(uuid.uuid4()), name=data['name'], age=data['age'], city=data['city'], has_voted=False)
-    db.session.add(new_user)
-    db.session.commit()
-    return {"message": "Registered successfully", "unique_id": new_user.unique_id}
+# Create and place widgets
+tk.Label(root, text="Name:").grid(row=0, column=0)
+name_entry = tk.Entry(root)
+name_entry.grid(row=0, column=1)
 
-# Route for Voting
-@app.route('/vote', methods=['POST'])
-def vote():
-    unique_id = request.json.get('unique_id')
-    choice = request.json.get('choice')
+tk.Label(root, text="Age:").grid(row=1, column=0)
+age_entry = tk.Entry(root)
+age_entry.grid(row=1, column=1)
 
-    user = User.query.filter_by(unique_id=unique_id).first()
-    if user and not user.has_voted:
-        new_vote = Vote(user_id=user.id, choice=choice)
-        user.has_voted = True
-        db.session.add(new_vote)
-        db.session.commit()
-        return {"message": "Vote recorded successfully"}
-    else:
-        return {"message": "Invalid ID or already voted"}, 400
+tk.Label(root, text="City:").grid(row=2, column=0)
+city_entry = tk.Entry(root)
+city_entry.grid(row=2, column=1)
 
-# Application Entry Point
-if __name__ == '__main__':
-    app.run(debug=True)
+submit_button = tk.Button(root, text="Register", command=register_voter)
+submit_button.grid(row=3, column=0)
+
+clear_button = tk.Button(root, text="Clear", command=lambda: [name_entry.delete(0, tk.END), age_entry.delete(0, tk.END), city_entry.delete(0, tk.END)])
+clear_button.grid(row=3, column=1)
+
+# Run the application
+root.mainloop()
