@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting System</title>
+</head>
+<body>
+    <h1>Voting System</h1>
+    <p>{{ citizen_info }}</p>
+    <form id="voteForm" action="{{ url_for('vote') }}" method="POST">
+        <label for="party">Enter the party you want to vote for:</label>
+        <input type="text" id="party" name="party">
+        <button type="submit">Vote</button>
+    </form>
+
+    <script>
+        // Handle form submission via AJAX
+        document.getElementById("voteForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var partyName = document.getElementById("party").value;
+            var formData = new FormData();
+            formData.append("party", partyName);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Display the message returned from the server
+                window.location.reload(); // Reload the page after voting
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

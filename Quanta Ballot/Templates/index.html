@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Registration</title>
+</head>
+<body>
+    <h1>Voter Registration</h1>
+    <form method="POST">
+        <label for="name">Enter your uid:</label><br>
+        <input type="text" id="name" name="name"><br>
+        <label for="age">Enter your age:</label><br>
+        <input type="text" id="age" name="age"><br>
+        <label for="city">Enter your city:</label><br>
+        <input type="text" id="city" name="city"><br>
+        <button type="submit">Submit</button>
+    </form>
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
+    <form action="/vote" method="GET">
+        <button type="submit">Go For Vote</button>
+    </form>
+</body>
+</html>
